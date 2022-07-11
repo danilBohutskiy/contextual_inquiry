@@ -1,0 +1,26 @@
+{
+  "name": "contextual_inquiry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danilBohutskiy/contextual_inquiry.git"
+  },
+  "author": "Danylo Bohutskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danilBohutskiy/contextual_inquiry/issues"
+  },
+  "homepage": "https://github.com/danilBohutskiy/contextual_inquiry#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
