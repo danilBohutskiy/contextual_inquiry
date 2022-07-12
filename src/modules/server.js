@@ -1,5 +1,5 @@
 const express = require('express');
-const { createViewPath, joinPath } = require('./helpers/FileHelper');
+const { rootDir, createViewPath, joinPath } = require('./helpers/FileHelper');
 
 class Server {
     constructor() {
@@ -14,9 +14,9 @@ class Server {
     setStatic() {
         this.app.use(express.static('src/web/css'));
         // bootstrap
-        this.app.use('/css', express.static(joinPath(__dirname, 'node_modules/bootstrap/dist/css')));
-        this.app.use('/js', express.static(joinPath(__dirname, 'node_modules/bootstrap/dist/js')));
-        this.app.use('/js', express.static(joinPath(__dirname, 'node_modules/jquery/dist')));
+        this.app.use('/css', express.static(joinPath(rootDir, 'node_modules/bootstrap/dist/css')));
+        this.app.use('/js', express.static(joinPath(rootDir, 'node_modules/bootstrap/dist/js')));
+        this.app.use('/js', express.static(joinPath(rootDir, 'node_modules/jquery/dist')));
     }
 
     startServer() {
