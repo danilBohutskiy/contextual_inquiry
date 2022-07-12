@@ -1,7 +1,7 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const Parser = require('./parser');
-const { rootDir, createViewPath, joinPath } = require('./helpers/FileHelper');
+const { rootDir, createViewPath, joinPath } = require('../helpers/FileHelper');
 
 class Server {
     constructor() {
@@ -13,7 +13,7 @@ class Server {
         this.app.set('view engine', 'ejs');
     }
 
-    setMiiddleWare() {
+    setMiddleWare() {
         // enable file upload
         this.app.use(fileUpload({createParentPath: true}));
     }
@@ -45,8 +45,9 @@ class Server {
                 let data = file.data.toString();
 
                 let parser = new Parser(data);
-                res.sendStatus(200);
+                res.send(parser.data);
             } catch (e) {
+                console.log(e);
                 res.sendStatus(500);
             }
 
