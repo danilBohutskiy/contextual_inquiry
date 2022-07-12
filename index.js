@@ -1,4 +1,4 @@
-const Index = require('./src/modules/app');
+const App = require('./src/modules/app');
 
-const app = new Index();
+const app = new App();
 app.run();
