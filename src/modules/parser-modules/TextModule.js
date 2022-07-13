@@ -3,62 +3,79 @@ const { window } = new JSDOM( "" );
 const $ = require( "jquery" )( window );
 
 const TEXT_TAGS = [
-    'p', 'span', 'textarea',
+    'p', 'span', 'textarea', 'a',
     'h1', 'h2', 'h3', 'h4',
-    'b', 'strong', 'label',
-    'pre', 'blockquote',
-    'a',
-    'li', 'ol',
+    'b', 'strong', 'pre', 'blockquote', 'address',
+    'label', 'li', 'ol'
 ];
 
 class TextModule {
     constructor(document) {
         this.document = document;
-        this.wordsCount = null;
     }
 
-    // only by tags map
-    getWordsCount() {
+    getData() {
+        let data = {};
+
+        data.words = this.getWordsData();
+
+        return data;
+    }
+
+    getWordsData() {
         let self = this;
 
-        let wordsCount = 0;
-        let el_data = {};
+        let total_words_count = 0;
 
-        $.each(TEXT_TAGS, (index, tag) => {
-            let elements = $(self.document).find(tag).filter(':not(:empty)');
+        let tag_data_arr = {};
 
-            let items_text = [];
-            $.each(elements, (tag_i, tag_item) => {
-                let text = $(tag_item).text().replace(/[\n ]/g, '').trim();
-                items_text.push(text);
+        $.each(TEXT_TAGS, (tag_selector_i, tag_selector) => {
+            let tags = $(self.document).find(tag_selector).filter(':not(:empty)');
 
-                let text_count = text.split(' ').length;
-                wordsCount += text_count;
+            let items = [];
+            let tag_words_count = 0;
+            let tag_text_total = [];
+
+            $.each(tags, (tag_i, tag_item) => {
+                let tag_text = self.formatText($(tag_item).text());
+                if (!tag_text)
+                    return;
+
+                tag_text_total.push(tag_text);
+                items.push(tag_text);
+
+                let text_count = tag_text.split(' ').length;
+
+                tag_words_count += text_count;
+                total_words_count += text_count;
             });
 
-            el_data[tag] = {
-                count: elements.length,
-                text: items_text.join(' ')
+            tag_data_arr[tag_selector] = {
+                items: items,
+                count: tags.length,
+                total_text: tag_text_total.join(' '),
+                words_count: tag_words_count,
             };
         });
 
         return {
-            tags: el_data,
-            total_words: wordsCount
+            tags: tag_data_arr,
+            total_words: total_words_count
         };
     }
 
-    run() {
-        let self = this;
-
-        self.wordsCount = this.getWordsCount();
-
-        return {
-            data: self.wordsCount,
-        }
+    formatText(text) {
+        // remove escape line
+        let formatted_text = text.replace(/[\\n ]/g, '').trim();
+        // remove double spaces
+        formatted_text = formatted_text.replace(/\s{2,}/g,' ');
+        // return formatted
+        return formatted_text;
     }
 
-
+    run() {
+        return this.getData();
+    }
 }
 
 module.exports = TextModule;
