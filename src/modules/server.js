@@ -42,15 +42,18 @@ class Server {
         this.app.post('/upload', (req, res) => {
             try {
                 let file = req.files.uploadFile;
-                let data = file.data.toString();
+                let mimeType = file.mimetype;
+                if ( !(mimeType.indexOf('html') > -1) )
+                    res.send('File must be a .html extension!');
 
+                let data = file.data.toString();
                 let parser = new Parser(data);
+
                 res.send(parser.data);
             } catch (e) {
                 console.log(e);
                 res.sendStatus(500);
             }
-
         });
     }
 }
