@@ -8,7 +8,7 @@ class App {
     run() {
         this.server.setEngine();
         this.server.setMiddleWare();
-        this.server.setStatic();
+        this.server.initStatic();
         this.server.setRouters();
         this.server.startServer();
     }

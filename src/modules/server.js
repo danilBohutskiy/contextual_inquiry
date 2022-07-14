@@ -18,12 +18,23 @@ class Server {
         this.app.use(fileUpload({createParentPath: true}));
     }
 
-    setStatic() {
-        this.app.use(express.static('src/web/css'));
-        // bootstrap
-        this.app.use('/css', express.static(joinPath(rootDir, 'node_modules/bootstrap/dist/css')));
-        this.app.use('/js', express.static(joinPath(rootDir, 'node_modules/bootstrap/dist/js')));
-        this.app.use('/js', express.static(joinPath(rootDir, 'node_modules/jquery/dist')));
+    setJsStatic(path) {
+        this.app.use('/js', express.static(joinPath(rootDir, path)));
+    };
+
+    setCssStatic(path) {
+        this.app.use('/css', express.static(joinPath(rootDir, path)));
+    }
+
+    initStatic() {
+        this.setJsStatic('node_modules/jquery/dist');
+        this.setJsStatic('node_modules/dm-file-uploader/dist/js');
+        this.setJsStatic('/src/web/js');
+
+        this.setCssStatic('node_modules/bootstrap/dist/css');
+        this.setCssStatic('node_modules/dm-file-uploader/dist/css');
+
+        this.setCssStatic('/src/web/css');
     }
 
     startServer() {
@@ -41,7 +52,7 @@ class Server {
 
         this.app.post('/upload', (req, res) => {
             try {
-                let file = req.files.uploadFile;
+                let file = req.files.document;
                 let mimeType = file.mimetype;
                 if ( !(mimeType.indexOf('html') > -1) )
                     res.send('File must be a .html extension!');
@@ -49,7 +60,7 @@ class Server {
                 let data = file.data.toString();
                 let parser = new Parser(data);
 
-                res.send(parser.data);
+                res.render(createViewPath('result'), {data: parser.data});
             } catch (e) {
                 console.log(e);
                 res.sendStatus(500);
