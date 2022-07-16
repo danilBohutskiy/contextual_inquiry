@@ -3,23 +3,34 @@
 <head>
 
     <script src="js/jquery.min.js"></script>
-    <script src="js/jquery.dm-uploader.min.js"></script>
-    <script src="js/file-upload.js"></script>
+    <script src="js/chart.min.js"></script>
+    <script src="js/result.js"></script>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/jquery.dm-uploader.min.css">
     <link rel="stylesheet" href="css/index.css">
 
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <title>Web-App | Results</title>
 </head>
 <body>
 
+<input name="data" type="hidden" value="<%= data %>">
+
+
 <div class="content-wrapper">
-    <h2>Here we go</h2>
+
+    <div class="module-block tagCountBlock">
+        <h2>Дослідження корректності тексту</h2>
+        <p class="form-text text-center">Коректність визначається довжиною тексту в діапазоні [45; 80]</p>
+        <canvas id="tagsCountChart" width="200" height="200"></canvas>
+        <p class="form-text mt-3">*враховуються тільки теги, що є на сторінці і мають відсоток коректності більше 0</p>
+    </div>
+
+
 </div>
 
 </body>

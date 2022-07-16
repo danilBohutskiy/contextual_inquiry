@@ -40,8 +40,6 @@ body {
   background-color: black;
 }
 
-
-
 .content-wrapper {
 
   .process-text {
@@ -68,5 +66,12 @@ body {
       margin-top: 10px;
       margin-right: 25%;
     }
+  }
+}
+
+.module-block {
+  h1,h2,h3,h4 {
+    text-align: center;
+    color: white;
   }
 }

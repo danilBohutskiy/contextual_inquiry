@@ -28,12 +28,10 @@ class Server {
 
     initStatic() {
         this.setJsStatic('node_modules/jquery/dist');
-        this.setJsStatic('node_modules/dm-file-uploader/dist/js');
+        this.setJsStatic('node_modules/chart.js/dist');
         this.setJsStatic('/src/web/js');
 
         this.setCssStatic('node_modules/bootstrap/dist/css');
-        this.setCssStatic('node_modules/dm-file-uploader/dist/css');
-
         this.setCssStatic('/src/web/css');
     }
 
@@ -60,7 +58,7 @@ class Server {
                 let data = file.data.toString();
                 let parser = new Parser(data);
 
-                res.render(createViewPath('result'), {data: parser.data});
+                res.render(createViewPath('result'), {data: JSON.stringify(parser.data)});
             } catch (e) {
                 console.log(e);
                 res.sendStatus(500);
