@@ -40,7 +40,14 @@ body {
   background-color: black;
 }
 
+
+
 .content-wrapper {
+
+  .process-text {
+    display: none;
+  }
+
   min-height: 135px;
   .text-wrapper {
     margin-bottom: 15px;
@@ -59,6 +66,7 @@ body {
       text-align: right;
       color: #8f8f8f;
       margin-top: 10px;
+      margin-right: 25%;
     }
   }
 }
