@@ -80,6 +80,46 @@ class TextModule {
         };
     }
 
+    getCorrectTagsChartData(data) {
+        let tags = data.words.tags;
+        let tag_name_map = [];
+        let tag_count_map = [];
+
+        $.each(tags, function (tag_name, tag_item) {
+            if (tag_item.count === 0 || tag_item.is_normal_total === 0)
+                return;
+
+            let tag_name_count = `<${tag_name}> ( ${tag_item.count} )`;
+            tag_name_map.push(tag_name_count);
+            tag_count_map.push(tag_item.is_normal_total);
+        });
+
+        return {
+            labels: tag_name_map,
+            data: tag_count_map
+        }
+    }
+
+    getCountWordsChartData(data) {
+        let tags = data.words.tags;
+        let tag_name_map = [];
+        let tag_count_map = [];
+
+        $.each(tags, function (tag_name, tag_item) {
+            if (tag_item.count == 0 || tag_item.words_count == 0)
+                return;
+
+            let tag_name_count = `<${tag_name}> ( ${tag_item.count} )`;
+            tag_name_map.push(tag_name_count);
+            tag_count_map.push(tag_item.words_count);
+        });
+
+        return {
+            labels: tag_name_map,
+            data: tag_count_map
+        }
+    }
+
     formatText(text) {
         // remove escape line
         let formatted_text = text.replace(/[\\n ]/g, '').trim();
@@ -90,7 +130,20 @@ class TextModule {
     }
 
     run() {
-        return this.getData();
+
+        let data = this.getData();
+        let correctText = this.getCorrectTagsChartData(data);
+        let countWordsChart = this.getCountWordsChartData(data);
+
+        let charts = {
+          correctText: correctText,
+          countWordsTotal: countWordsChart,
+        };
+
+        return {
+            data: data,
+            charts: charts
+        };
     }
 }
 

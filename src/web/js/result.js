@@ -19,41 +19,36 @@ function getRandomRGB() {
     return randomRGB();
 }
 
-function getTextModuleChart(module) {
-    let chart = $('#tagsCountChart');
-
-    let tags = module.words.tags;
-    let tag_name_map = [];
-    let tag_count_map = [];
-    $.each(tags, function (tag_name, tag_item) {
-        if (tag_item.left == 0 || tag_item.is_normal_total == 0)
-            return;
-
-        let tag_name_count = `<${tag_name}> ( ${tag_item.count} )`;
-        tag_name_map.push(tag_name_count);
-        tag_count_map.push(tag_item.is_normal_total);
-    });
-
-    $('#total_normal_text').text();
+function setChart(type, selector, label, chartData) {
+    let chart = $(selector);
 
     const data = {
-        labels: tag_name_map,
+        labels: chartData.labels,
         datasets: [{
-            label: 'Tags count',
-            data: tag_count_map,
-            backgroundColor: getRandomRGBArray(tag_count_map.length),
+            label: label,
+            data: chartData.data,
+            backgroundColor: getRandomRGBArray(chartData.data.length),
             hoverOffset: 4
         }]
     };
 
     new Chart(chart, {
-        type: 'doughnut',
+        type: type,
         data: data,
+        options: {
+            responsive: false,
+        }
     });
+}
+
+function getTextModuleChart(module) {
+    setChart('doughnut', '#correctTextChart', 'Correct text', module.charts.correctText);
+    setChart('pie', '#wordsCountChart', 'Words count', module.charts.countWordsTotal);
 }
 
 $(document).ready(() => {
     const data = JSON.parse($('input[name="data"]').val());
+    console.log(data);
 
     initCharts(data);
 });

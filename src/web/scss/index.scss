@@ -1,3 +1,8 @@
+p {
+  margin: 0;
+  padding: 0;
+}
+
 label {
   cursor: pointer;
   display: block;
@@ -73,5 +78,22 @@ body {
   h1,h2,h3,h4 {
     text-align: center;
     color: white;
+  }
+}
+
+.text-module-blocks {
+  display: flex;
+
+  .module-block {
+    margin-left: 15px;
+    display: flex;
+    flex-direction: column;
+
+    min-height: 700px;
+    .module-text {
+      text-align: center;
+      margin-top: auto;
+      color: white;
+    }
   }
 }

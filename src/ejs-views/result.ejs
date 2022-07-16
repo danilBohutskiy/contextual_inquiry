@@ -17,19 +17,26 @@
     <title>Web-App | Results</title>
 </head>
 <body>
-
-<input name="data" type="hidden" value="<%= data %>">
-
+<div>
+    <input name="data" type="hidden" value="<%= data %>">
+</div>
 
 <div class="content-wrapper">
 
-    <div class="module-block tagCountBlock">
-        <h2>Дослідження корректності тексту</h2>
-        <p class="form-text text-center">Коректність визначається довжиною тексту в діапазоні [45; 80]</p>
-        <canvas id="tagsCountChart" width="200" height="200"></canvas>
-        <p class="form-text mt-3">*враховуються тільки теги, що є на сторінці і мають відсоток коректності більше 0</p>
+    <div class="text-module-blocks">
+        <div class="module-block tagCountBlock">
+            <h2>Дослідження корректності тексту</h2>
+            <p class="form-text text-center">Коректність визначається довжиною тексту в діапазоні [45; 80]</p>
+            <canvas id="correctTextChart"></canvas>
+            <p class="module-text">*враховуються тільки теги, що є на сторінці і мають відсоток коректності більше 0</p>
+        </div>
+        <div class="module-block tagCountBlock">
+            <h2>Кількість слів в тегах</h2>
+            <p class="form-text text-center"></p>
+            <canvas id="wordsCountChart"></canvas>
+            <p class="module-text">*враховуються тільки теги, що є на сторінці і мають контент всередині себе</p>
+        </div>
     </div>
-
 
 </div>
 
