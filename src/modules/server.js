@@ -58,6 +58,7 @@ class Server {
                 let data = file.data.toString();
                 let parser = new Parser(data);
 
+                //res.send(parser.data);
                 res.render(createViewPath('result'), {data: JSON.stringify(parser.data)});
             } catch (e) {
                 console.log(e);

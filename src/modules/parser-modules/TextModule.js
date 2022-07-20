@@ -2,39 +2,127 @@ const { JSDOM } = require( "jsdom" );
 const { window } = new JSDOM( "" );
 const $ = require( "jquery" )( window );
 
-const TEXT_TAGS = [
-    'p', 'span', 'textarea', 'a',
-    'h1', 'h2', 'h3', 'h4',
-    'b', 'strong', 'pre', 'blockquote', 'address',
-    'label', 'li', 'ol'
+const LONG_TAGS_LIST = [
+    'p', 'article',
 ];
 
-const LENGTH_MIN_LIMIT = 45;
-const LENGTH_MAX_LIMIT = 80;
+const SHORT_TAGS_LIST = [
+    'span', 'b', 'strong', 'abbr', 'address',
+];
+
+const TITLE_TAGS_LIST = [
+    'h1', 'h2', 'h3', 'h4',
+];
+
+const CAPTION_TAGS_LIST = [
+  'caption', 'label', 'legend'
+];
+
+const QUOTE_TAGS_LIST = [
+    'blockquote',
+];
+
+const LINE_TAGS_LIST = [
+    'li', 'ol'
+];
+
+const LONG_TAGS_WORDS_MIN    = 100;
+const LONG_TAGS_WORDS_MAX    = 200;
+
+const SHORT_TAGS_WORDS_MIN   = 25;
+const SHORT_TAGS_WORDS_MAX   = 50;
+// OR
+
+const TITLE_LENGTH_MIN       = 60;
+const TITLE_LENGTH_MAX       = 70;
+// OR
+const TITLE_WORDS_MIN        = 10;
+const TITLE_WORDS_MAX        = 25;
+
+const CAPTION_LENGTH_MAX     = 50;
+const QUOTE_WORDS_MIN        = 40;
+const LINE_LENGTH_MAX        = 70;
 
 
 class TextModule {
     constructor(document) {
         this.document = document;
+        this.tags = this.getTagsMap();
+    }
+
+    getTagsMap() {
+       return [].concat.apply([], [
+           LONG_TAGS_LIST,
+           SHORT_TAGS_LIST,
+           TITLE_TAGS_LIST,
+           CAPTION_TAGS_LIST,
+           QUOTE_TAGS_LIST,
+           LINE_TAGS_LIST,
+       ]);
     }
 
     getData() {
         let data = {};
 
-        data.words = this.getWordsData();
+        data.readable = this.getReadableData();
 
         return data;
     }
 
-    getWordsData() {
+    getTextCountWords(text) {
+        return text ? text.split(' ').length : 0;
+    }
+
+    getTextLength(text) {
+        return text ? text.length : 0;
+    }
+
+    formatText(text) {
+        // remove escape line
+        let formatted_text = text.replace(/[\\n ]/g, '').trim();
+        // remove double spaces
+        formatted_text = formatted_text.replace(/\s{2,}/g,' ');
+        // return formatted
+        return formatted_text;
+    }
+
+    isTextReadable(text, selector) {
+        let self = this;
+
+        let words_count = self.getTextCountWords(text);
+        let text_length = self.getTextLength(text);
+
+        // long
+        if (LONG_TAGS_LIST.includes(selector))
+            return words_count >= LONG_TAGS_WORDS_MIN && words_count <= LONG_TAGS_WORDS_MAX;
+
+        if (SHORT_TAGS_LIST.includes(selector))
+            return words_count >= SHORT_TAGS_WORDS_MIN && words_count <= SHORT_TAGS_WORDS_MAX;
+
+        if (TITLE_TAGS_LIST.includes(selector))
+            return (words_count >= TITLE_WORDS_MIN && words_count <= TITLE_WORDS_MAX) || (text_length >= TITLE_LENGTH_MIN && text_length <= TITLE_LENGTH_MAX);
+
+        if (CAPTION_TAGS_LIST.includes(selector))
+            return text_length <= CAPTION_LENGTH_MAX;
+
+        if (QUOTE_TAGS_LIST.includes(selector))
+            return words_count >= QUOTE_WORDS_MIN;
+
+        if (LINE_TAGS_LIST.includes(selector))
+            return text_length <= LINE_LENGTH_MAX;
+
+        return false;
+    }
+
+    getReadableData() {
         let self = this;
 
         let total_words_count = 0;
 
         let tag_data_arr = {};
 
-        $.each(TEXT_TAGS, (tag_selector_i, tag_selector) => {
-            let tags = $(self.document).find(tag_selector).filter(':not(:empty)');
+        $.each(self.tags, (tag_selector_i, tag_selector) => {
+            let all_tags = $(self.document).find(tag_selector).filter(':not(:empty)');
 
             let items = [];
             let tag_text_total = [];
@@ -42,26 +130,28 @@ class TextModule {
 
             let tag_is_normal = 0;
 
-            $.each(tags, (tag_i, tag_item) => {
+            $.each(all_tags, (tag_i, tag_item) => {
                 let tag_text = self.formatText($(tag_item).text());
                 if (!tag_text)
                     return;
 
-                let text_length = tag_text.length;
-                let text_count = tag_text.split(' ').length;
-                let text_is_normal = text_length >= LENGTH_MIN_LIMIT && text_length <= LENGTH_MAX_LIMIT;
+                let text_length = self.getTextLength(tag_text);
+                let text_words_count = self.getTextCountWords(tag_text);
 
-                if (text_is_normal)
+                let is_readable = self.isTextReadable(tag_text, tag_selector);
+
+                if (is_readable)
                     tag_is_normal++;
 
-                tag_words_count += text_count;
-                total_words_count += text_count;
+                tag_words_count += text_words_count;
+                total_words_count += text_words_count;
                 tag_text_total.push(tag_text);
 
                 items.push({
-                    value: tag_text,
-                    length: text_length,
-                    is_normal: text_is_normal,
+                    text: tag_text,
+                    text_length: text_length,
+                    text_words_count: text_words_count,
+                    is_readable: is_readable,
                 });
             });
 
@@ -69,8 +159,8 @@ class TextModule {
                 items: items,
                 count: items.length,
                 total_text: tag_text_total.join(' '),
-                is_normal_total: tag_is_normal ? (tag_is_normal / items.length * 100).toFixed(2) : 0,
-                words_count: tag_words_count,
+                total_words_count: tag_words_count,
+                total_readable: tag_is_normal ? (tag_is_normal / items.length * 100).toFixed(2) : 0,
             };
         });
 
@@ -81,17 +171,17 @@ class TextModule {
     }
 
     getCorrectTagsChartData(data) {
-        let tags = data.words.tags;
+        let tags = data.readable.tags;
         let tag_name_map = [];
         let tag_count_map = [];
 
         $.each(tags, function (tag_name, tag_item) {
-            if (tag_item.count === 0 || tag_item.is_normal_total === 0)
+            if (tag_item.count === 0 || tag_item.total_readable === 0)
                 return;
 
             let tag_name_count = `<${tag_name}> ( ${tag_item.count} )`;
             tag_name_map.push(tag_name_count);
-            tag_count_map.push(tag_item.is_normal_total);
+            tag_count_map.push(tag_item.total_readable);
         });
 
         return {
@@ -101,32 +191,23 @@ class TextModule {
     }
 
     getCountWordsChartData(data) {
-        let tags = data.words.tags;
+        let tags = data.readable.tags;
         let tag_name_map = [];
         let tag_count_map = [];
 
         $.each(tags, function (tag_name, tag_item) {
-            if (tag_item.count == 0 || tag_item.words_count == 0)
+            if (tag_item.count == 0 || tag_item.total_readable === 0 || tag_item.total_words_count == 0)
                 return;
 
             let tag_name_count = `<${tag_name}> ( ${tag_item.count} )`;
             tag_name_map.push(tag_name_count);
-            tag_count_map.push(tag_item.words_count);
+            tag_count_map.push(tag_item.total_words_count);
         });
 
         return {
             labels: tag_name_map,
             data: tag_count_map
         }
-    }
-
-    formatText(text) {
-        // remove escape line
-        let formatted_text = text.replace(/[\\n ]/g, '').trim();
-        // remove double spaces
-        formatted_text = formatted_text.replace(/\s{2,}/g,' ');
-        // return formatted
-        return formatted_text;
     }
 
     run() {
