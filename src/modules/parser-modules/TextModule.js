@@ -177,7 +177,8 @@ class TextModule {
             if (tag_item.count === 0 || tag_item.total_readable === 0)
                 return;
 
-            let tag_name_count = `<${tag_name}> ( ${tag_item.count} )`;
+            //let tag_name_count = `<${tag_name}> ( ${tag_item.count} )`;
+            let tag_name_count = `<${tag_name}>`;
             tag_name_map.push(tag_name_count);
             tag_count_map.push(tag_item.total_readable);
         });
@@ -197,7 +198,8 @@ class TextModule {
             if (tag_item.count == 0 || tag_item.total_readable === 0 || tag_item.total_words_count == 0)
                 return;
 
-            let tag_name_count = `<${tag_name}> ( ${tag_item.count} )`;
+            //let tag_name_count = `<${tag_name}> ( ${tag_item.count} )`;
+            let tag_name_count = `<${tag_name}>`;
             tag_name_map.push(tag_name_count);
             tag_count_map.push(tag_item.total_words_count);
         });
