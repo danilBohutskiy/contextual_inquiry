@@ -44,15 +44,29 @@ function setChart(type, selector, label, chartData, backgroundColor = null) {
     });
 }
 
+function setJson(selector, data) {
+    $(selector).attr('data-json', JSON.stringify(data));
+}
+
 function getTextModuleChart(module) {
     const readableBackgroundColors = getRandomRGBArray(module.charts.correctText.data.length);
     setChart('doughnut', '#correctTextChart', 'Correct text', module.charts.correctText, readableBackgroundColors);
     setChart('pie', '#wordsCountChart', 'Words count', module.charts.countWordsTotal, readableBackgroundColors);
+    setJson('.readable-data', module.data.readable);
 }
 
 $(document).ready(() => {
     const data = JSON.parse($('input[name="data"]').val());
+    initCharts(data);
     console.log(data);
 
-    initCharts(data);
+    $('.show-json').on('click', function (e) {
+        e.preventDefault();
+
+        let json_data = JSON.parse($(this).attr('data-json'));
+        $('#json-renderer').jsonViewer(json_data);
+
+        $('#json-modal').modal('show');
+    });
+
 });

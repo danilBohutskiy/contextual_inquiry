@@ -31,7 +31,6 @@ const LONG_TAGS_WORDS_MAX    = 200;
 
 const SHORT_TAGS_WORDS_MIN   = 25;
 const SHORT_TAGS_WORDS_MAX   = 50;
-// OR
 
 const TITLE_LENGTH_MIN       = 60;
 const TITLE_LENGTH_MAX       = 70;
@@ -42,7 +41,6 @@ const TITLE_WORDS_MAX        = 25;
 const CAPTION_LENGTH_MAX     = 50;
 const QUOTE_WORDS_MIN        = 40;
 const LINE_LENGTH_MAX        = 70;
-
 
 class TextModule {
     constructor(document) {

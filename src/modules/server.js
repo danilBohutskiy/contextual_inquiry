@@ -28,10 +28,13 @@ class Server {
 
     initStatic() {
         this.setJsStatic('node_modules/jquery/dist');
+        this.setJsStatic('node_modules/bootstrap/dist/js');
+        this.setJsStatic('node_modules/jquery.json-viewer/json-viewer');
         this.setJsStatic('node_modules/chart.js/dist');
         this.setJsStatic('/src/web/js');
 
         this.setCssStatic('node_modules/bootstrap/dist/css');
+        this.setCssStatic('node_modules/jquery.json-viewer/json-viewer');
         this.setCssStatic('/src/web/css');
     }
 

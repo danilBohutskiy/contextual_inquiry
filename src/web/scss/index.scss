@@ -81,6 +81,14 @@ body {
   }
 }
 
+.show-json {
+  text-decoration: none;
+  color: white;
+  &:hover {
+    color: #8b8b8b;
+  }
+}
+
 .text-module-blocks {
   display: flex;
 
