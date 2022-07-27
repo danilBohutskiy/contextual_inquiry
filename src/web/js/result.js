@@ -1,8 +1,16 @@
 const SELECTOR_WORDS_COUNT  = 'wordsCountChart';
 const SELECTOR_CORRECT_TEXT = 'correctTextChart';
 
+const COLORS_MAP = [
+    '#244D6B', '#78d28a', '#69cfac',
+    '#44C1C1','#A557C7', '#8B5EC9',
+    '#C144BA','#B65BC8', '#6269CB',
+    '#1C5154','#1F485C','#215263'
+];
+
 const defaultLegendClickHandler = Chart.defaults.plugins.legend.onClick;
 const pieDoughnutLegendClickHandler = Chart.controllers.doughnut.overrides.plugins.legend.onClick;
+
 const newOnClickTextModuleHandler = function (e, legendItem, legend) {
     const type = legend.chart.config.type;
     let canvas = legend.chart.canvas.id;
@@ -18,11 +26,7 @@ const newOnClickTextModuleHandler = function (e, legendItem, legend) {
             break;
     }
 
-    if (type === 'pie' || type === 'doughnut') {
-        pieDoughnutLegendClickHandler(e, legendItem, legend)
-    } else {
-        defaultLegendClickHandler(e, legendItem, legend);
-    }
+    pieDoughnutLegendClickHandler(e, legendItem, legend);
 
     if (!chart)
         return false;
@@ -42,10 +46,10 @@ function initCharts(modules) {
 
 function getRandomRGBArray(count) {
     let colors = [];
-    for (let i = 0; i < count; i++) {
-        let value = getRandomRGB();
-        colors.push(value);
-    }
+
+    for (let i = 0; i < count; i++)
+        colors.push(COLORS_MAP[i]);
+
     return colors;
 }
 
@@ -58,21 +62,23 @@ function getRandomRGB() {
 }
 
 function setChart(params) {
-    let type            = params.type;
-    let chartData       = params.data;
-    let backgroundColor = params.backgroundColors;
-    let selector        = params.selector;
-    let onClickCallback = params.callback;
+    let type              = params.type;
+    let paramsData        = params.data;
+    let backgroundColor   = params.backgroundColors;
+    let selector          = params.selector;
+    let onClickCallback   = params.callback;
+    let datalabels        = params.datalabels;
 
     let chart = $(selector);
 
     if (!backgroundColor)
-        backgroundColor = getRandomRGBArray(chartData.data.length);
+        backgroundColor = getRandomRGBArray(paramsData.data.length);
 
-    const data = {
-        labels: chartData.labels,
+    const chartData = {
+        plugins: [ChartDataLabels],
+        labels: paramsData.labels,
         datasets: [{
-            data: chartData.data,
+            data: paramsData.data,
             backgroundColor: backgroundColor,
             hoverOffset: 4
         }]
@@ -83,11 +89,16 @@ function setChart(params) {
         legend.onClick = onClickCallback;
 
     new Chart(chart, {
+        plugins: [ChartDataLabels],
         type: type,
-        data: data,
+        data: chartData,
         options: {
             plugins: {
-              legend: legend
+              legend: legend,
+              tooltip: {
+                  enabled: false,
+              },
+              datalabels: datalabels
             },
             responsive: false,
         }
@@ -107,6 +118,12 @@ function setTextModuleChart(module) {
         data: module.charts.correctText,
         backgroundColors: backgroundColors,
         callback: newOnClickTextModuleHandler,
+        datalabels: {
+            color: '#faffec',
+            formatter: function(value) {
+                return `${value} %`;
+            }
+        }
     };
 
     const paramsWords = {
@@ -115,6 +132,9 @@ function setTextModuleChart(module) {
         data: module.charts.countWordsTotal,
         backgroundColors: backgroundColors,
         callback: newOnClickTextModuleHandler,
+        datalabels: {
+            color: '#faffec',
+        }
     };
 
     setChart(paramsCorrect);
@@ -122,20 +142,24 @@ function setTextModuleChart(module) {
     setJson('.readable-data', module.data.readable);
 }
 
-$(document).ready(() => {
-    const data = JSON.parse($('input[name="data"]').val());
-    initCharts(data);
-    console.log(data);
+function initGlobalCharts() {
+    Chart.defaults.plugins.legend.labels.color = 'white';
+}
 
+function initJsonViewer() {
     $('.show-json').on('click', function (e) {
         e.preventDefault();
 
         let json_data = JSON.parse($(this).attr('data-json'));
-        $('#json-renderer').jsonViewer(json_data, {
-            collapsed: true,
-        });
-
+        $('#json-renderer').jsonViewer(json_data, {collapsed: true});
         $('#json-modal').modal('show');
     });
+}
 
+$(document).ready(() => {
+    const data = JSON.parse($('input[name="data"]').val());
+
+    initGlobalCharts();
+    initJsonViewer();
+    initCharts(data);
 });

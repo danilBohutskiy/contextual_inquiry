@@ -31,6 +31,7 @@ class Server {
         this.setJsStatic('node_modules/bootstrap/dist/js');
         this.setJsStatic('node_modules/jquery.json-viewer/json-viewer');
         this.setJsStatic('node_modules/chart.js/dist');
+        this.setJsStatic('node_modules/chartjs-plugin-datalabels/dist');
         this.setJsStatic('/src/web/js');
 
         this.setCssStatic('node_modules/bootstrap/dist/css');
