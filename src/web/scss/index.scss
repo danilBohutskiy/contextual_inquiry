@@ -36,13 +36,24 @@ input {
 }
 
 body {
+  background-color: black;
+}
+
+.body-result, .body-index {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.body-result {
+  padding-top: 150px;
+  padding-bottom: 150px;
+}
+
+.body-index {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background-color: black;
 }
 
 .content-wrapper {
@@ -89,7 +100,7 @@ body {
   }
 }
 
-.text-module-blocks {
+.module-block-item {
   display: flex;
 
   .module-block {
@@ -104,4 +115,8 @@ body {
       color: white;
     }
   }
+}
+
+.semantic-module {
+  justify-content: center;
 }

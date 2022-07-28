@@ -21,33 +21,48 @@
     <title>Web-App | Results</title>
 </head>
 <body>
-<div>
-    <input name="data" type="hidden" value="<%= data %>">
-</div>
-
-<div class="content-wrapper">
-
-    <%- include('./json-modal'); %>
-
-    <div class="text-module-blocks">
-        <div class="module-block tagCountBlock">
-            <h2>Читабельності тексту</h2>
-            <p class="form-text text-center">Коректність визначається за різними показниками</p>
-            <p class="form-text text-center">(чим вищий відсоток читабельності, тим краще)</p>
-            <canvas id="correctTextChart"></canvas>
-            <p class="module-text">*враховуються тільки теги, що є на сторінці і мають відсоток читабельності більше 0</p>
-            <a href="#" class="readable-data show-json text-center">Продивитись дані</a>
-        </div>
-        <div class="module-block tagCountBlock">
-            <h2>Кількість слів в тегах</h2>
-            <p class="form-text text-center"></p>
-            <canvas id="wordsCountChart"></canvas>
-            <p class="module-text">*враховуються тільки теги, що є на сторінці і мають контент всередині себе</p>
-            <a href="#" class="readable-data show-json text-center">Продивитись дані</a>
-        </div>
+<div class="body-result">
+    <div>
+        <input name="data" type="hidden" value="<%= data %>">
     </div>
+    <div class="content-wrapper">
 
+        <%- include('./json-modal'); %>
+
+        <div class="module-block-item text-module">
+            <div class="module-block tagCountBlock">
+                <h2>Читабельності тексту</h2>
+                <p class="form-text text-center">Коректність визначається за різними показниками</p>
+                <p class="form-text text-center">(чим вищий відсоток читабельності, тим краще)</p>
+                <canvas id="correctTextChart"></canvas>
+                <p class="module-text">*враховуються тільки теги, що є на сторінці і мають відсоток читабельності більше 0</p>
+                <a href="#" class="readable-data show-json text-center">Продивитись дані</a>
+            </div>
+            <div class="module-block tagCountBlock">
+                <h2>Кількість слів в тегах</h2>
+                <p class="form-text text-center"></p>
+                <canvas id="wordsCountChart"></canvas>
+                <p class="module-text">*враховуються тільки теги, що є на сторінці і мають контент всередині себе</p>
+                <a href="#" class="readable-data show-json text-center">Продивитись дані</a>
+            </div>
+        </div>
+        <div class="module-block-item semantic-module">
+            <div class="module-block tagCountBlock">
+                <h2>Семантичний аналіз</h2>
+                <p class="form-text text-center">Наявність семантичних тегів</p>
+                <p class="form-text text-center">(семантичні теги покращують позиції в видачі пошуковими системами)</p>
+                <canvas id="semanticChart"></canvas>
+                <p class="module-text">*враховуються тільки теги, що є на сторінці</p>
+                <a href="#" class="semantic-data show-json text-center">Продивитись дані</a>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-wrapper">
+
+            </div>
+        </footer>
+    </div>
 </div>
-
 </body>
 </html>

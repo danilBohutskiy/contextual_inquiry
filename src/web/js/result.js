@@ -1,6 +1,8 @@
 const SELECTOR_WORDS_COUNT  = 'wordsCountChart';
 const SELECTOR_CORRECT_TEXT = 'correctTextChart';
 
+const SELECTOR_SEMANTIC_TEXT = 'semanticChart';
+
 const COLORS_MAP = [
     '#244D6B', '#78d28a', '#69cfac',
     '#44C1C1','#A557C7', '#8B5EC9',
@@ -8,11 +10,45 @@ const COLORS_MAP = [
     '#1C5154','#1F485C','#215263'
 ];
 
+const COLORS_SEMANTIC_MAP = [
+    '#349D98','#36A172','#38A86C',
+    '#73A437','#3BB03F','#38A85E',
+    '#39AC75','#38A89D','#389BA8',
+    '#38A8A3','#389DA8','#349D7D'
+];
+
 const defaultLegendClickHandler = Chart.defaults.plugins.legend.onClick;
 const pieDoughnutLegendClickHandler = Chart.controllers.doughnut.overrides.plugins.legend.onClick;
 
 const newOnClickTextModuleHandler = function (e, legendItem, legend) {
-    const type = legend.chart.config.type;
+    let canvas = legend.chart.canvas.id;
+
+    let chart = null;
+
+    switch (canvas) {
+        case SELECTOR_WORDS_COUNT:
+            chart = Chart.getChart(SELECTOR_CORRECT_TEXT);
+            break;
+        case SELECTOR_CORRECT_TEXT:
+            chart = Chart.getChart(SELECTOR_WORDS_COUNT);
+            break;
+    }
+
+    pieDoughnutLegendClickHandler(e, legendItem, legend);
+
+    if (!chart)
+        return false;
+
+    $.each(chart.legend.legendItems, function (index, item) {
+        if (item.text === legendItem.text && item.hidden === legendItem.hidden) {
+            chart.toggleDataVisibility(index);
+            chart.update();
+            return true;
+        }
+    });
+};
+
+const newOnClickSemanticModuleHandler = function (e, legendItem, legend) {
     let canvas = legend.chart.canvas.id;
 
     let chart = null;
@@ -41,14 +77,15 @@ const newOnClickTextModuleHandler = function (e, legendItem, legend) {
 };
 
 function initCharts(modules) {
-    setTextModuleChart(modules.TextModule)
+    setTextModuleChart(modules.TextModule);
+    setSectionsModule(modules.SectionsModule);
 }
 
-function getRandomRGBArray(count) {
+function getRandomRGBArray(count, colors_map) {
     let colors = [];
 
     for (let i = 0; i < count; i++)
-        colors.push(COLORS_MAP[i]);
+        colors.push(colors_map[i]);
 
     return colors;
 }
@@ -72,7 +109,7 @@ function setChart(params) {
     let chart = $(selector);
 
     if (!backgroundColor)
-        backgroundColor = getRandomRGBArray(paramsData.data.length);
+        backgroundColor = getRandomRGBArray(paramsData.data.length, COLORS_MAP);
 
     const chartData = {
         plugins: [ChartDataLabels],
@@ -109,8 +146,26 @@ function setJson(selector, data) {
     $(selector).attr('data-json', JSON.stringify(data));
 }
 
+function setSectionsModule(module) {
+    const backgroundColors = getRandomRGBArray(module.charts.semanticTags.data.length, COLORS_SEMANTIC_MAP);
+
+    const paramsSemantic = {
+        type: 'doughnut',
+        selector: `#${SELECTOR_SEMANTIC_TEXT}`,
+        data: module.charts.semanticTags,
+        backgroundColors: backgroundColors,
+        callback: null,
+        datalabels: {
+            color: '#faffec',
+        }
+    };
+
+    setChart(paramsSemantic);
+    setJson('.semantic-data', module.data.semantic);
+}
+
 function setTextModuleChart(module) {
-    const backgroundColors = getRandomRGBArray(module.charts.correctText.data.length);
+    const backgroundColors = getRandomRGBArray(module.charts.correctText.data.length, COLORS_MAP);
 
     const paramsCorrect = {
         type: 'doughnut',
@@ -158,7 +213,7 @@ function initJsonViewer() {
 
 $(document).ready(() => {
     const data = JSON.parse($('input[name="data"]').val());
-
+    console.log(data);
     initGlobalCharts();
     initJsonViewer();
     initCharts(data);
