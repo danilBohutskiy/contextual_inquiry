@@ -30,15 +30,15 @@
         <%- include('./json-modal'); %>
 
         <div class="module-block-item text-module">
-            <div class="module-block tagCountBlock">
-                <h2>Читабельності тексту</h2>
-                <p class="form-text text-center">Коректність визначається за різними показниками</p>
+            <div class="module-block readable-module">
+                <h2>Читабельність тексту</h2>
+                <p class="form-text text-center">Визначається за різними показниками</p>
                 <p class="form-text text-center">(чим вищий відсоток читабельності, тим краще)</p>
                 <canvas id="correctTextChart"></canvas>
                 <p class="module-text">*враховуються тільки теги, що є на сторінці і мають відсоток читабельності більше 0</p>
                 <a href="#" class="readable-data show-json text-center">Продивитись дані</a>
             </div>
-            <div class="module-block tagCountBlock">
+            <div class="module-block words-module">
                 <h2>Кількість слів в тегах</h2>
                 <p class="form-text text-center"></p>
                 <canvas id="wordsCountChart"></canvas>
