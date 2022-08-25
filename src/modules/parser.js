@@ -1,11 +1,9 @@
 const { htmlTojQueryDoc } = require('../helpers/HtmlHelper');
 const TextModule = require('./parser-modules/TextModule');
-const ColorsModule = require('./parser-modules/ColorsModule');
 const SectionsModule = require('./parser-modules/SectionsModule');
 
 const MODULES_MAP = {
     TextModule,
-    ColorsModule,
     SectionsModule
 };
 
